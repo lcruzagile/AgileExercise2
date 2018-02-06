@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
-Fri Feb 02 15:40:04 CST 2018:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-0161-5876-515b-000000577358 
-on database directory memory:C:\Users\C5205716\Documents\workspace-sts-3.9.2.RELEASE\agile-java-exercise2-todo-list\testdb with class loader sun.misc.Launcher$AppClassLoader@4c12b6 
+Tue Feb 06 15:09:43 CST 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-0161-6cf3-f766-000000a0d300 
+on database directory memory:C:\Users\C5205716\Documents\workspace-sts-3.9.2.RELEASE\agile-java-exercise2-todo-list\testdb with class loader sun.misc.Launcher$AppClassLoader@372a00 
 Loaded from file:/C:/Users/C5205716/.m2/repository/org/apache/derby/derby/10.13.1.1/derby-10.13.1.1.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_151-b12

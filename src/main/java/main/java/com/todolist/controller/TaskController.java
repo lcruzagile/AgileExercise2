@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javassist.NotFoundException;
+import main.java.com.todolist.TodoList.TodoList;
+import main.java.com.todolist.exception.NotFoundException;
 import main.java.com.todolist.service.TaskService;
+import main.java.com.todolist.service.TodoListService;
 import main.java.com.todolist.task.Task;
 
 @RestController
@@ -21,65 +23,66 @@ public class TaskController {
 	
 	@Autowired
 	private TaskService taskService;
+	@Autowired
+	private TodoListService todoListService;
 	
 	// Creates logger
 	final Logger logger = LogManager.getLogger(TaskController.class);
 
-	@RequestMapping("/todolist")
-	public List<Task> getTodoList(){
+	@RequestMapping("/todo-list/{id}/task")
+	public List<Task> getTasksForTodoList(@PathVariable("id") int id ) {
 		if(this.logger.isDebugEnabled())
-			this.logger.debug("/todolist");
-		return this.taskService.getTodoList();
+			this.logger.debug("/todo-list/{id}/task/ "+id);
+		
+		return this.todoListService.getTodoList(id).getTasks();
+		//return this.taskService.getTaskByTodoList(id);
 	}
 	
-	@RequestMapping(method=RequestMethod.POST, value="/todolist/task")
-	public void addTask(@RequestBody Task task) {
-		if(this.logger.isDebugEnabled())
-			this.logger.debug("/todolist/task "+task.toString());
-		this.taskService.addTask(task);
-	}
-	
-	@RequestMapping("/todolist/{id}")
+	@RequestMapping("/todo-list/task/{id}")
 	public Task getTask(@PathVariable("id") int id ) {
 		if(this.logger.isDebugEnabled())
-			this.logger.debug("/todolist/{id} "+id);
+			this.logger.debug("/todo-list/task/{id} "+id);
 		
 		return this.taskService.getTask(id);
 	}
 	
-	@RequestMapping(method=RequestMethod.PUT, value="/todolist/task/{id}")
-	public void updateTask(@PathVariable("id") int id, @RequestBody Task task) {
+	@RequestMapping(method=RequestMethod.POST, value="/todo-list/{todoListId}/task")
+	public void addTask(@PathVariable("todoListId") int todoListId, @RequestBody Task task) {
+		if(this.logger.isDebugEnabled())
+			this.logger.debug("/todo-list/task "+task.toString());
+		this.todoListService.addTask(todoListId, task);
+	}
+	
+	@RequestMapping(method=RequestMethod.PUT, value="/todo-list/{todoListId}/task/{id}")
+	public void updateTask(@PathVariable("id") int id, @RequestBody Task task) throws NotFoundException {
 		if(this.logger.isDebugEnabled())
 			this.logger.debug("/todolist/task/{id} "+task);
 		
-		try {
 			this.taskService.updateTask(task);
-		} catch (NotFoundException e) {
-			logger.error(e.getMessage());
-		}
 	}
-	
-	@RequestMapping(method=RequestMethod.DELETE, value="/todolist/task/{id}")
-	public void deleteTask(@PathVariable("id") int id) {
+
+	@RequestMapping(method=RequestMethod.DELETE, value="/todo-list/{todoListId}/task/{id}")
+	public void deleteTask(@PathVariable("todoListId") int todoListId, @PathVariable("id") int id) {
 		if(this.logger.isDebugEnabled())
 			this.logger.debug("/todolist/task/{id} "+id);
-		
-		try {
-			this.taskService.deleteTask(id);
-		} catch (NotFoundException e) {
-			logger.error(e.getMessage());
-		}
+
+		TodoList todoList = this.todoListService.getTodoList(todoListId);
+		Task task = this.taskService.getTask(id);
+
+		todoList.getTasks().remove(task);
+
+		this.todoListService.updateTodoList(todoList);
 	}
 	
-	@RequestMapping("/todolist/status/{statusId}")
-	public List<Task> getTodoListByStatus(@PathVariable("statusId") int statusId) {
+	@RequestMapping("/todo-list/{todoListId}/status/{statusId}")
+	public List<Task> getTodoListByStatus(@PathVariable("todoListId") int todoListId, @PathVariable("statusId") int statusId) {
 		if(this.logger.isDebugEnabled())
 			this.logger.debug("/todolist/status/{statusId} "+statusId);
-		
-		return this.taskService.getTodoListByStatus(statusId);
+
+		return this.taskService.getTodoListByStatus(todoListId, statusId); 
 	}
 	
-	@RequestMapping("/todolist/fortoday")
+	@RequestMapping("/todo-list/for-today")
 	public List<Task> getTaskCountByStatus() {
 		if(this.logger.isDebugEnabled())
 			this.logger.debug("/todolist/fortoday");

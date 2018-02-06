@@ -8,4 +8,5 @@ import main.java.com.todolist.task.Task;
 
 public interface TaskRepository extends CrudRepository<Task, Integer> {
 	List<Task> findByStatus(int statusId);
+	List<Task> findByTodoListId(int todoListId);
 }

@@ -4,17 +4,22 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import main.java.com.todolist.TodoList.TodoList;
+
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "TASK")
 public class Task {
-	
 	
 	@Column(name = "ID")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -27,6 +32,17 @@ public class Task {
 	private String description;
 	@Column(name = "DUE_DATE")
 	private String dueDate = LocalDate.now().toString();
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	private TodoList todoList;
+
+	public TodoList getTodoList() {
+		return todoList;
+	}
+
+	public void setTodoList(TodoList todoList) {
+		this.todoList = todoList;
+	}
 
 	public Task() {
 	}
